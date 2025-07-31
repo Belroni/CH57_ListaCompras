@@ -22,6 +22,11 @@ function validarCantidad(){ //Valida la cantidad que se ingresa, en caso de no s
     return true;
 }//ValidarCantidad
 
+//3. Crear un precio por producto al azar
+function getPrecio(){
+    return Math.round(Math.random() *1000) / 100;
+}//getPrecio
+
 btnAgregar.addEventListener("click", function(event){
     event.preventDefault();
 
