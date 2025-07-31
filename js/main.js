@@ -5,9 +5,13 @@ const btnClear = document.getElementById("btnClear");
 
 const alertValidaciones = document.getElementById("alertValidaciones");
 const alertValidacionesTexto = document.getElementById("alertValidacionesTexto");
+const tablaListaCompras = document.getElementById("tablaListaCompras");
+const cuerpoTabla = tablaListaCompras.getElementsByTagName("tbody").item(0);
+
+let cont = 0; //Contador
 
 function validarCantidad(){ //Valida la cantidad que se ingresa, en caso de no ser asi dirige a un mensaje de error dependiendo el caso
-    if(txtNumber.value.length==""){ //txtNumber.value==""
+    if(txtNumber.value.length== 0){ //txtNumber.value==""
         return false;
     }//Tenga información
 
@@ -24,11 +28,13 @@ function validarCantidad(){ //Valida la cantidad que se ingresa, en caso de no s
 
 //3. Crear un precio por producto al azar
 function getPrecio(){
-    return Math.round(Math.random() *1000) / 100;
+    return (Math.round(Math.random() * 1000) / 100) ;
 }//getPrecio
 
 btnAgregar.addEventListener("click", function(event){
     event.preventDefault();
+
+    let isValid = true; //valida la información y si no se cumple el if, es false
 
     //Limpia la alerta cada que cambiemos el texto y la cantidad
     alertValidacionesTexto.innerHTML="";
@@ -44,6 +50,7 @@ btnAgregar.addEventListener("click", function(event){
         //mensaje de error si es menor que 3
         alertValidacionesTexto.innerHTML="<strong>El nombre del producto no es correcto. </strong>";
         alertValidaciones.style.display="block";
+        isValid = false;
     }//<3
 
     if(! validarCantidad()){
@@ -51,7 +58,26 @@ btnAgregar.addEventListener("click", function(event){
         alertValidacionesTexto.innerHTML += //el += le agrega el segundo mensaje de error
                     "<strong>La cantidad no es correcto. </strong>";
         alertValidaciones.style.display="block";
-    }//! ValirdarCantidad
+        isValid = false;
+    }//! ValidarCantidad
+
+    if (isValid){
+        //Agregar los elementos a la tabla
+        cont ++;
+        let precio = getPrecio();
+        let row =   `<tr>
+                        <td>${cont}</td>
+                        <td>${txtName.value}</td>
+                        <td>${txtNumber.value}</td>
+                        <td>${precio}</td>
+                    </tr>
+        `;
+
+        cuerpoTabla.insertAdjacentHTML("beforeend", row); //se agrega al final de la tabla
+        txtName.value = ""; //limpia el campo
+        txtNumber.value = ""; //limpia el campo
+        txtName.focus(); //focus llega al campo de nuevo para volver a escribir
+    }//isValid
 
     //Number
     //tenga información
