@@ -18,6 +18,8 @@ let cont = 0; //Contador
 let costoTotal = 0; //contador de la tabla
 let totalEnProductos = 0;
 
+let datos = new Array(); //Es un arreglo con un cosntructor, tambien se puede usar [];
+
 function validarCantidad() {
   //Valida la cantidad que se ingresa, en caso de no ser asi dirige a un mensaje de error dependiendo el caso
     if (txtNumber.value.length == 0) {
@@ -84,23 +86,42 @@ btnAgregar.addEventListener("click", function (event) {
                             <td>${precio}</td>
                         </tr>
             `;
+            
+        //Se hace el arreglo que definimos arriba con el resumen de la compra
+        let elemento = {
+            "cont" : cont,
+            "nombre" : txtName.value,
+            "cantidad" : txtNumber.value,
+            "precio" : precio
+        };
+        datos.push(elemento);
+        localStorage.setItem("datos", JSON.stringify(datos) );
 
-    cuerpoTabla.insertAdjacentHTML("beforeend", row); //se agrega al final de la tabla}
-    
-    // 4. Realizar las operaciones para conocer el total de elementos
-    contadorProductos.innerText = cont; //es el resumen de la compra
-    totalEnProductos += Number(txtNumber.value); //con el constructor lo convertimos de string a numero
-    productosTotal.innerText = totalEnProductos;
-    costoTotal += precio * Number(txtNumber.value);
-    //costoTotal.toFixed(2) forma facíl de redondear
-    precioTotal.innerText = new Intl.NumberFormat("es-MX", {
-        style: "currency", currency: "MXN"
-    }).format(costoTotal); 
+        cuerpoTabla.insertAdjacentHTML("beforeend", row); //se agrega al final de la tabla}
+        
+        // 4. Realizar las operaciones para conocer el total de elementos
+        contadorProductos.innerText = cont; //es el resumen de la compra
+        totalEnProductos += Number(txtNumber.value); //con el constructor lo convertimos de string a numero
+        productosTotal.innerText = totalEnProductos;
+        // 5. Realizar las operaciones para conocer el total en costo
+        costoTotal += precio * Number(txtNumber.value);
+        //costoTotal.toFixed(2) forma facíl de redondear
+        precioTotal.innerText = new Intl.NumberFormat("es-MX", {
+            style: "currency", currency: "MXN"
+        }).format(costoTotal); 
 
-    txtName.value = ""; //limpia el campo
-    txtNumber.value = ""; //limpia el campo
-    txtName.focus(); //focus llega al campo de nuevo para volver a escribir
-    } //isValid
+        //6. Almacenar la información en el almacenamiento local del navegador
+        let resumen = {
+            "cont" : cont,
+            "totalEnProductos" : totalEnProductos,
+            "costoTotal" : costoTotal
+        };
+        localStorage.setItem("resumen", JSON.stringify(resumen) ); //lo convertimos de objeto a string con JSON
+
+        txtName.value = ""; //limpia el campo
+        txtNumber.value = ""; //limpia el campo
+        txtName.focus(); //focus llega al campo de nuevo para volver a escribir
+        } //isValid
 
     //Number
     //tenga información
