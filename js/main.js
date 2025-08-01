@@ -4,9 +4,7 @@ const btnAgregar = document.getElementById("btnAgregar");
 const btnClear = document.getElementById("btnClear");
 
 const alertValidaciones = document.getElementById("alertValidaciones");
-const alertValidacionesTexto = document.getElementById(
-    "alertValidacionesTexto"
-);
+const alertValidacionesTexto = document.getElementById("alertValidacionesTexto");
 const tablaListaCompras = document.getElementById("tablaListaCompras");
 const cuerpoTabla = tablaListaCompras.getElementsByTagName("tbody").item(0);
 
@@ -86,7 +84,7 @@ btnAgregar.addEventListener("click", function (event) {
                             <td>${precio}</td>
                         </tr>
             `;
-            
+
         //Se hace el arreglo que definimos arriba con el resumen de la compra
         let elemento = {
             "cont" : cont,
@@ -128,3 +126,78 @@ btnAgregar.addEventListener("click", function (event) {
     //tiene que ser un número
     // mayor que 0
 }); //btnAgregar click
+
+// 7. Mostrar la información almacenada cuando se abra la página
+window.addEventListener("load", function(event){
+    event.preventDefault();
+
+    if (this.localStorage.getItem("datos")!=null){ //si datos es diferente de null, se ejecuta 
+        datos = JSON.parse(this.localStorage.getItem("datos")); //de string a objeto
+        datos.forEach( (dato) => {
+            let row = `<tr>
+                            <td>${dato.cont}</td>
+                            <td>${dato.nombre}</td>
+                            <td>${dato.cantidad}</td>
+                            <td>${dato.precio}</td>
+                        </tr>
+            `;
+            cuerpoTabla.insertAdjacentHTML("beforeend", row);
+        }); //foreach
+    }//datos != null 
+
+    if (this.localStorage.setItem("resumen")!=null){
+        let resumen = JSON.parse(this.localStorage.getItem("resumen")); //de string a objeto
+        costoTotal = resumen.costoTotal;
+        totalEnProductos = resumen.totalEnProductos;
+        cont = resumen.cont;
+    }// resumen !=null
+
+    //Asigno los valores a las etiquetas que le corresponden
+    contadorProductos.innerText = cont; //es el resumen de la compra
+    productosTotal.innerText = totalEnProductos;
+    precioTotal.innerText = new Intl.NumberFormat("es-MX", {
+            style: "currency", currency: "MXN"
+        }).format(costoTotal); 
+
+}); //window load
+
+btnClear.addEventListener("click", function(event){
+    event.preventDefault();
+
+    //1. eliminar el localStorage
+    localStorage.removeItem("datos");
+    localStorage.removeItem("resumen");
+
+    //2. limpiar la tabla
+    cuerpoTabla.innerHTML = "";
+
+    //3. limpiar los campos
+    txtName.value = ""; //limpia el campo
+    txtNumber.value = ""; //limpia el campo
+    txtName.focus(); //focus llega al campo de nuevo para volver a escribir
+
+    //4. limpiar el borde de los campos
+    txtName.style.border = ""; //para modificar el borde
+    txtNumber.style.border = ""; //para modificar el borde
+
+    //5. limpiar los alerts
+    //Limpia la alerta cada que cambiemos el texto y la cantidad
+    alertValidacionesTexto.innerHTML = "";
+    alertValidaciones.style.display = "none";
+
+    //6. limpiar el resumen
+    cont=0;
+    totalEnProductos = 0;
+    costoTotal = 0;
+
+    contadorProductos.innerText = cont; //es el resumen de la compra
+    productosTotal.innerText = totalEnProductos;
+    precioTotal.innerText = new Intl.NumberFormat("es-MX", {
+            style: "currency", currency: "MXN"
+        }).format(costoTotal); 
+    datos = new Array(); //iniciar el arreglo de nuevo
+})//Limpiar todo
+
+
+
+
